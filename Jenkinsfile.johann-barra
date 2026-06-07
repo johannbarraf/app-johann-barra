@@ -15,19 +15,15 @@ pipeline {
     }
     stages {
         stage {
-            stage('Validar WSL') {
-                steps {
-                    sh 'uname -a'
-                    sh 'whoami'
-                    sh 'pwd'
-            }
-        }
-        
+                    
         stage('CI - instalacion'){
             stages {
                 stage('CI - Creacion de Imagen Docker'){
                     steps {
                         sh '''
+                            "uname -a"
+                            "whoami"
+                            "pwd"
                             "docker build -t johann-barra/tarea-final:jenkins ./"
                             '''
                             }
