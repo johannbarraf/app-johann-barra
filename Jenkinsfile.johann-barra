@@ -1,10 +1,31 @@
 pipeline {
-    agent any
-    stages{
-        stage("Primer Pipeline") {
-            steps{
-                sh 'echo "saludos desde el terminal"'
-            }
+    agent {
+        kubernetes {
+            defaultContainer 'pnpm'
+            yamlFile 'agent-node.yaml'
         }
     }
+    environment{
+        IMAGE_NAME = 'tarea-final-johann-barra'
+        DH_REPO = 'johannbarradocker/lab3jbf'
+        GH_REPO = 'ghcr.io/johannbarraf/lab3jbf/tarea-final:johann-barra'
+        K8S_NAMESPACE = 'ns-johann-barra'
+    }
+    stages {
+        stage('CI - instalacion'){
+            stages {
+                stage('CI - Configuracion de pnpm y node'){
+                    steps {
+                        container('pnpm'){
+                            sh '''
+                                pnpm runtime set node 24 -g
+                                node --version
+                                pnpm --version
+                            '''
+                            }
+                         }
+                    }
+                }
+            }
+        }
 }
