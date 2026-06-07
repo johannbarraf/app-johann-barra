@@ -8,7 +8,7 @@ pipeline {
     environment{
         IMAGE_NAME = 'tarea-final-johann-barra'
         DH_REPO = 'johannbarradocker/lab3jbf'
-        GH_REPO = 'ghcr.io/johannbarraf/lab3jbf/tarea-final:johann-barra'
+//        GH_REPO = 'ghcr.io/johannbarraf/lab3jbf/tarea-final:johann-barra'
         K8S_NAMESPACE = 'ns-johann-barra'
     }
     stages {
