@@ -14,7 +14,7 @@ pipeline {
         K8S_NAMESPACE = 'ns-johann-barra'
     }
     stages {
-        stages {
+        stage {
             stage('Validar WSL') {
                 steps {
                     sh 'uname -a'
