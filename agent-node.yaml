@@ -56,6 +56,7 @@ spec:
 
     - name: buildkit
       image: moby/buildkit:rootless
+      privileged: true
       command:
         - cat
       tty: true
