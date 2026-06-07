@@ -11,8 +11,7 @@ spec:
         command:
             -cat
         tty: true
-'''
-        }
+'''}
     }
     stages {
         stage ('Primer paso'){
