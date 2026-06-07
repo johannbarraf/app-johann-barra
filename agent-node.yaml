@@ -41,18 +41,18 @@ spec:
 #          cpu: "2000m"
 #          memory: "1024Mi"
 
-    - name: kubectl
-      image: alpine/k8s:1.34.1
-      command:
-        - cat
-      tty: true
-      resources:
-        requests:
-          cpu: "100m"
-          memory: "128Mi"
-        limits:
-          cpu: "1000m"
-          memory: "512Mi"
+#    - name: kubectl
+#      image: alpine/k8s:1.34.1
+#      command:
+#        - cat
+#      tty: true
+#      resources:
+#        requests:
+#          cpu: "100m"
+#          memory: "128Mi"
+#        limits:
+#          cpu: "1000m"
+#          memory: "512Mi"
 
     - name: buildkit
       image: moby/buildkit:rootless
