@@ -7,8 +7,8 @@ kind: Pod
 spec:
     containers:
         - name: herramientas
-         image: alpine:3.23
-         command:
+        image: alpine:3.23
+        command:
             -cat
         tty: true
 '''
