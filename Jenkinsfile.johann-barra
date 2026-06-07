@@ -14,22 +14,22 @@ pipeline {
         K8S_NAMESPACE = 'ns-johann-barra'
     }
     stages {
-        stage {
+//        stage {
                     
         stage('CI - instalacion'){
             stages {
                 stage('CI - Creacion de Imagen Docker'){
                     steps {
                         sh '''
-                            "uname -a"
-                            "whoami"
-                            "pwd"
-                            "docker build -t johann-barra/tarea-final:jenkins ./"
+                            uname -a
+                            whoami
+                            pwd
+                            docker build -t johann-barra/tarea-final:jenkins ./
                             '''
                             }
                          }
                     }
                 }
             }
-        }
+//        }
 }
