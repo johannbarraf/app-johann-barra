@@ -1,148 +1,24 @@
 pipeline {
     agent {
         kubernetes {
-            defaultContainer 'pnpm'
-            yamlFile 'agent-node.yaml'
+            yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+            containers:
+                -name: herramientas
+                 image: alpine:3.23
+                 command:
+                    -cat
+                tty: true
+'''
         }
-    }
-    environment{
-        IMAGE_NAME = 'tarea-final-johann-barra'
-        DH_REPO = 'johannbarradocker/lab3jbf'
-        GH_REPO = 'ghcr.io/johannbarraf/lab3jbf/tarea-final:johann-barra'
-        K8S_NAMESPACE = 'ns-johann-barra'
     }
     stages {
-        stage('CI - instalacion'){
-//            stages {
-                stage('CI - Configuracion de pnpm y node'){
-                    steps {
-                        container('pnpm'){
-                            sh '''
-                                pnpm runtime set node 24 -g
-                                node --version
-                                pnpm --version
-                            '''
-                        }
-                    }
-                
-//                stage('CI - Instalacion de dependencias'){
-                    steps {
-                        container('pnpm'){
-                            sh '''
-                                pnpm install --frozen-lockfile
-                            '''
-                        }
-                    }
-                
-//                stage('CI - Revsion de linter'){
-                    steps {
-                        container('pnpm'){
-                            sh '''
-                                pnpm lint
-                            '''
-                        }
-                    }
-                }
-            }
-        stage('CI - Test'){
-                    steps {
-                        container('pnpm'){
-                            sh '''
-                                pnpm test
-                            '''
-                        }
-                    }
-                }
-                    
-        stage('CI - Build'){
-                    steps {
-                        container('pnpm'){
-                            sh '''
-                                pnpm build
-                            '''
-                        }
-                    }
-                }
-        stage('CI - Semversion'){
-                    steps{
-                        container('pnpm'){
-                            script {
-                                env.APP_SEMANTIC_VERSION = sh(
-                                    script: '''
-                                        node -p "require('./package.json').version"
-                                    ''',
-                                    returnStdout:true
-                                ).trim()
-                                echo "Version semantica detectada : ${env.APP_SEMANTIC_VERSION}"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        stage('CD - build y push imagen') {
+        stage ('Primer paso'){
             steps {
-                script {
-                    if(!env.APP_SEMANTIC_VERSION?.trim()){
-                        error('APP_SEMANTIC_VERSION no esta definido')
-                    }
-                }
-                container('buildkit'){
-                    sh '''
-                        export DOCKER_CONFIG=/docker-configs/dockerhub
-                        test -s "${DOCKER_CONFIG}/config.json"
-
-                        buildctl-daemonless.sh build \
-                        --frontend dockerfile.v0 \
-                        --local context=. \
-                        --local dockerfile=. \
-                        --output type=image,name=${DH_REPO}:latest,push=true
-
-                        buildctl-daemonless.sh build \
-                        --frontend dockerfile.v0 \
-                        --local context=. \
-                        --local dockerfile=. \
-                        --output type=image,name=${DH_REPO}:${APP_SEMANTIC_VERSION},push=true
-
-                        export DOCKER_CONFIG=/docker-configs/github
-                        test -s "${DOCKER_CONFIG}/config.json"
-
-                        buildctl-daemonless.sh build \
-                        --frontend dockerfile.v0 \
-                        --local context=. \
-                        --local dockerfile=. \
-                        --output type=image,name=${GH_REPO}:latest,push=true
-
-                        buildctl-daemonless.sh build \
-                        --frontend dockerfile.v0 \
-                        --local context=. \
-                        --local dockerfile=. \
-                        --output type=image,name=${GH_REPO}:${APP_SEMANTIC_VERSION},push=true
-                    '''
-                }
+                sh 'echo "mensaje desde el terminal"'
             }
-
-        }
-        stage('CD - Despliegue en produccion'){
-            when {
-                branch 'main'
-            }
-            steps {
-                script {
-                    if(!env.APP_SEMANTIC_VERSION?.trim()){
-                        error('APP_SEMANTIC_VERSION no esta definido')
-                    }
-                }
-                container('kubectl'){
-                    withKubeConfig([credentialsId: 'kubernetes-config']){
-                        sh '''
-                            kubectl -n ${K8S_NAMESPACE} set image deployment/${IMAGE_NAME} ${IMAGE_NAME}=${DH_REPO}:${APP_SEMANTIC_VERSION}
-                            kubectl -n ${K8S_NAMESPACE} rollout status deployment/${IMAGE_NAME}
-                        '''
-                    }
-                }
-            }
-
         }
     }
 }
