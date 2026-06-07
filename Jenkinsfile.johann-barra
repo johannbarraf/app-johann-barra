@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            defaultContainer 'pnpm'
+//            defaultContainer 'pnpm'
             yamlFile 'agent-node.yaml'
         }
     }
@@ -14,13 +14,10 @@ pipeline {
     stages {
         stage('CI - instalacion'){
             stages {
-                stage('CI - Configuracion de pnpm y node'){
+                stage('CI - Creacion de Imagen Docker'){
                     steps {
-                        container('pnpm'){
-                            sh '''
-                                pnpm runtime set node 24 -g
-                                node --version
-                                pnpm --version
+                        sh '''
+                            docker build -t johann-barra/tarea-final:jenkins ./
                             '''
                             }
                          }
