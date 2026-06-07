@@ -17,7 +17,7 @@ pipeline {
                 stage('CI - Creacion de Imagen Docker'){
                     steps {
                         sh '''
-                            docker build -t johann-barra/tarea-final:jenkins ./
+                            "docker build -t johann-barra/tarea-final:jenkins ./"
                             '''
                             }
                          }
