@@ -2,6 +2,8 @@ pipeline {
     agent {
         kubernetes {
 //            defaultContainer 'pnpm'
+            defaultContainer 'buildkit'
+
             yamlFile 'agent-node.yaml'
         }
     }
