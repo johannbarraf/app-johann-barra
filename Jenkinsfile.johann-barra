@@ -1,10 +1,8 @@
 pipeline {
     agent {
         kubernetes {
-//            defaultContainer 'pnpm'
-            defaultContainer 'buildkit'
-
-            yamlFile 'agent-node.yaml'
+            defaultContainer 'kubernetes'
+            yamlFile 'agent.yaml'
         }
     }
     environment{
@@ -14,16 +12,13 @@ pipeline {
         K8S_NAMESPACE = 'ns-johann-barra'
     }
     stages {
-//        stage {
+        stage {
                     
         stage('CI - instalacion'){
             stages {
                 stage('CI - Creacion de Imagen Docker'){
                     steps {
                         sh '''
-                            uname -a
-                            whoami
-                            pwd
                             docker build -t johann-barra/tarea-final:jenkins ./
                             '''
                             }
@@ -31,5 +26,24 @@ pipeline {
                     }
                 }
             }
-//        }
+        }
+        stage('CI - Verificar Imagen'){
+                    steps {
+                        steps {
+                            sh '''
+                                docker image inspect johann-barra/tarea-final:jenkins
+                            '''
+                        }
+                    }
+                }
+        
+        stage('CI - Publicar en Repos'){
+                    steps {
+                        steps {
+                            sh '''
+                                docker image inspect johann-barra/tarea-final:jenkins
+                            '''
+                        }
+                    }
+                }
 }
